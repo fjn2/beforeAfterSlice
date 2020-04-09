@@ -1,0 +1,90 @@
+<html>
+  <style>
+    .wrapper {
+      width: 480px;
+      height: 480px;
+      margin: auto;
+      translate: transform3d(0, -50px, 0);
+      position: relative;
+    }
+    .image-container {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 20px;
+      bottom: 0;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-position: top center;
+      background-size: 500px 500px;
+    }
+
+    .before {
+      /* background: red; */
+      background-image: url('/assets/before.jpeg');
+
+    }
+    .after {
+      /* background: blue; */
+      left: 50%;
+      background-image: url('/assets/after.jpeg');
+    }
+    .border {
+      height: 100%;
+      width: 16px;
+      margin-left: -8px;
+      background: grey;
+      cursor: pointer;
+      position: absolute;
+    }
+    .border:active {
+      background: yellow;
+    }
+    .header {
+      text-align: center;
+    }
+  </style>
+  <body>
+    <script>
+      function allowDrop(e) {
+        console.log('allowDrop', e)
+        document.getElementById('border').style.transform = '()'
+        return true;
+      }
+      function drop(e) {
+        console.log('drop', e)
+        return true;
+      }
+      function dragging(e) {
+        console.log('ondragstart', e)
+        const img = new Image();
+        img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
+        e.dataTransfer.setDragImage(img, 0, 0);
+        return true;
+      }
+      function drag(e) {
+        if (e.x) {
+          const maxWidth = document.getElementById('before').getBoundingClientRect().width;
+          let offset = e.x - document.getElementById('before').getBoundingClientRect().x;
+          if (offset < 0) {
+            offset = 0;
+          }
+          if (offset > maxWidth) {
+            offset = maxWidth;
+          }
+          console.log(offset)
+          document.getElementById('after').style.left = offset + 'px';
+        }
+
+      }
+    </script>
+    <div class="wrapper">
+      <div class="header">&lt;-- Drag te bar --&gt;</div>
+      <div id="before" class="image-container before">
+      </div>
+      <div id="after" class="image-container after">
+        <div id="border" class="border" draggable="true" ondrag="drag(event)" ondragstart="dragging(event)"></div>
+      </div>
+    </div>
+  </body>
+</html>

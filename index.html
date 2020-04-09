@@ -1,8 +1,9 @@
 <html>
   <style>
     .wrapper {
-      width: 480px;
+      width: auto;
       height: 480px;
+      max-width: 480px;
       margin: auto;
       translate: transform3d(0, -50px, 0);
       position: relative;
@@ -50,6 +51,9 @@
     }
   </style>
   <body>
+    <header>
+        <meta name="viewport" content="width=device-width, user-scalable=no">
+    </header>
     <script>
       function dragging(e) {
         const img = new Image();
@@ -69,15 +73,46 @@
           }
           document.getElementById('after').style.left = offset + 'px';
         }
+      }
+
+      // mobile
+
+      function tStart(e) {
+        console.log('tStart', e);
+        window.document.addEventListener('touchmove', mouseMove);
 
       }
+      function tEnd(e) {
+        console.log('tEnd', e);
+        window.document.removeEventListener('touchmove', mouseMove);
+      }
+
+      function mouseMove(e) {
+        console.log(e)
+        if (e.touches && e.touches.length) {
+          drag({
+            x: e.touches[0].clientX
+          })
+        }
+
+      }
+
     </script>
     <div class="wrapper">
       <div class="header">&lt;-- Drag te bar --&gt;</div>
       <div id="before" class="image-container before">
       </div>
       <div id="after" class="image-container after">
-        <div id="border" class="border" draggable="true" ondrag="drag(event)" ondragstart="dragging(event)"></div>
+        <div
+          id="border"
+          class="border"
+          draggable="true"
+          ondrag="drag(event)"
+          ondragstart="dragging(event)"
+          ontouchstart="tStart(event)"
+          ontouchend="tEnd(event)"
+        >
+        </div>
       </div>
     </div>
     <div class="footer">

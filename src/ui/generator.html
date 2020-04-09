@@ -1,0 +1,89 @@
+<html>
+  <head>
+  </head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    .wrapper {
+      display: flex;
+      align-items: stretch;
+      height: 100%
+    }
+    .header {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translate3d(-50%, 0, 0);
+      background: white;
+      padding: 1rem;
+      border: 5px;
+    }
+    .left {
+      text-align: center;
+      flex: 1;
+      background: greenyellow;
+    }
+    .right {
+      text-align: center;
+      flex: 1;
+      background: lightblue;
+    }
+    #beforeImage, #afterImage {
+      margin-top: 50%;
+    transform: translate3d(0, -50%, 0);
+    }
+    #generate {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translate3d(-50%, 0, 0);
+      background: orange;
+      padding: 1rem;
+      width: 40%;
+      font-size: 2rem;
+      border-radius: 10px;
+      color: white;
+    }
+  </style>
+  <body>
+    <div class="header">
+      Hola sobreviviente, aqui puedes crear el antes y despues de la aventura del corona virus
+    </div>
+    <div class="wrapper">
+      <div class="break"></div>
+      <div class="left">
+        <input type="file" id="beforeImage" />
+      </div>
+      <div class="right">
+          <input type="file" id="afterImage" />
+      </div>
+      <button id="generate" onclick="generate()">Generar</button>
+      <script type="text/javascript">
+        const sessionId = Math.round(Math.random() * 100000);
+
+        function upload(sessionId, photo, part) {
+          let formData = new FormData();
+          formData.append("photo", photo);
+          return fetch(`/api/${sessionId}/${part}/upload`, {
+            method: "POST", body: formData
+          });
+        }
+        function generate() {
+          let photo = document.getElementById("afterImage").files[0];
+          const promiseAfter = upload(sessionId, photo, 'after');
+
+          let photoBefore = document.getElementById("beforeImage").files[0];
+          const promiseBefore = upload(sessionId, photoBefore, 'before');
+
+          Promise.all([promiseBefore, promiseAfter]).then(showRedirectUrl);
+        }
+
+        function showRedirectUrl() {
+          alert(`http://${window.location.host}/app/view.html?id=${sessionId}`);
+        }
+      </script>
+    </div>
+  </body>
+</html>

@@ -22,13 +22,13 @@
 
     .before {
       /* background: red; */
-      background-image: url('assets/before.jpeg');
+      /* background-image: url('assets/before.jpeg'); */
 
     }
     .after {
       /* background: blue; */
       left: 50%;
-      background-image: url('assets/after.jpeg');
+      /* background-image: url('assets/after.jpeg'); */
     }
     .border {
       height: 100%;
@@ -59,9 +59,11 @@
         const img = new Image();
         img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
         e.dataTransfer.setDragImage(img, 0, 0);
+        e.dataTransfer.setData('text/plain', 'node');
         return true;
       }
       function drag(e) {
+        console.log(e)
         if (e.x) {
           const maxWidth = document.getElementById('before').getBoundingClientRect().width;
           let offset = e.x - document.getElementById('before').getBoundingClientRect().x;
@@ -88,16 +90,47 @@
       }
 
       function mouseMove(e) {
-        console.log(e)
         if (e.touches && e.touches.length) {
           drag({
             x: e.touches[0].clientX
           })
         }
-
       }
 
+      function getData(id) {
+        fetch(`/api/${id}/before`).then((res) => {
+          res.arrayBuffer().then((buffer) => {
+            var base64Flag = 'data:image/jpeg;base64,';
+            var imageStr = arrayBufferToBase64(buffer);
+
+            document.getElementById('before').style.backgroundImage = 'url("' + base64Flag + imageStr + '")';
+          });
+        });
+        fetch(`/api/${id}/after`).then((res) => {
+          res.arrayBuffer().then((buffer) => {
+            var base64Flag = 'data:image/jpeg;base64,';
+            var imageStr = arrayBufferToBase64(buffer);
+
+            document.getElementById('after').style.backgroundImage = 'url("' + base64Flag + imageStr + '")';
+          });
+        });
+      }
+
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get('id');
+      getData(id);
+
+      function arrayBufferToBase64(buffer) {
+        var binary = '';
+        var bytes = [].slice.call(new Uint8Array(buffer));
+
+        bytes.forEach((b) => binary += String.fromCharCode(b));
+
+        return window.btoa(binary);
+      };
     </script>
+    <img />
     <div class="wrapper">
       <div class="header">&lt;-- Drag te bar --&gt;</div>
       <div id="before" class="image-container before">
@@ -111,12 +144,15 @@
           ondragstart="dragging(event)"
           ontouchstart="tStart(event)"
           ontouchend="tEnd(event)"
+          ondragover="(event) => console.log('event.pageX', event.pageX)"
         >
         </div>
       </div>
     </div>
     <div class="footer">
       Cuarentena día 35
+      <br />
+      Crea tu propio before/after cuarentena <a href="generator.html">aqui</a>
     </div>
   </body>
 </html>

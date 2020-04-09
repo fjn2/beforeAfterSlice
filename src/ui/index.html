@@ -1,0 +1,126 @@
+<html>
+  <style>
+    .wrapper {
+      width: auto;
+      height: 480px;
+      max-width: 480px;
+      margin: auto;
+      translate: transform3d(0, -50px, 0);
+      position: relative;
+    }
+    .image-container {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 20px;
+      bottom: 0;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-position: top center;
+      background-size: 500px 500px;
+    }
+
+    .before {
+      /* background: red; */
+      background-image: url('assets/before.jpeg');
+
+    }
+    .after {
+      /* background: blue; */
+      left: 50%;
+      background-image: url('assets/after.jpeg');
+    }
+    .border {
+      height: 100%;
+      width: 16px;
+      margin-left: -8px;
+      background: grey;
+      cursor: pointer;
+      position: absolute;
+    }
+    .border:active {
+      background: yellow;
+      cursor: pointer;
+    }
+    .header {
+      text-align: center;
+    }
+    .footer {
+      margin-top: 3rem;
+      text-align: center;
+    }
+  </style>
+  <body>
+    <header>
+        <meta name="viewport" content="width=device-width, user-scalable=no">
+    </header>
+    <script>
+      function dragging(e) {
+        const img = new Image();
+        img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
+        e.dataTransfer.setDragImage(img, 0, 0);
+        e.dataTransfer.setData('text/plain', 'node');
+        return true;
+      }
+      function drag(e) {
+        console.log(e)
+        if (e.x) {
+          const maxWidth = document.getElementById('before').getBoundingClientRect().width;
+          let offset = e.x - document.getElementById('before').getBoundingClientRect().x;
+          if (offset < 0) {
+            offset = 0;
+          }
+          if (offset > maxWidth) {
+            offset = maxWidth;
+          }
+          document.getElementById('after').style.left = offset + 'px';
+        }
+      }
+
+      // mobile
+
+      function tStart(e) {
+        console.log('tStart', e);
+        window.document.addEventListener('touchmove', mouseMove);
+
+      }
+      function tEnd(e) {
+        console.log('tEnd', e);
+        window.document.removeEventListener('touchmove', mouseMove);
+      }
+
+      function mouseMove(e) {
+        if (e.touches && e.touches.length) {
+          drag({
+            x: e.touches[0].clientX
+          })
+        }
+
+      }
+
+    </script>
+    <div class="wrapper">
+      <div class="header">&lt;-- Drag te bar --&gt;</div>
+      <div id="before" class="image-container before">
+      </div>
+      <div id="after" class="image-container after">
+        <div
+          id="border"
+          class="border"
+          draggable="true"
+          ondrag="drag(event)"
+          ondragstart="dragging(event)"
+          ontouchstart="tStart(event)"
+          ontouchend="tEnd(event)"
+          ondragover="(event) => console.log('event.pageX', event.pageX)"
+        >
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      Cuarentena día 35
+      <br />
+      Crea tu propio before/after cuarentena <a href="generator.html">aqui</a>
+    </div>
+  </body>
+</html>

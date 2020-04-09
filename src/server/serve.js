@@ -45,6 +45,6 @@ app.use('/api/:sessionId/:part', (req, res) => {
   // res.send(DB[req.params.sessionId]);
 });
 
-app.listen(8282, function () {
-  console.log('Example app listening on port 8282!');
+app.listen(process.env.PORT || 8282, function () {
+  console.log(`Example app listening on port ${process.env.PORT || 8282}!`);
 });

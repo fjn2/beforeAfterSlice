@@ -15,20 +15,19 @@
       top: 20px;
       bottom: 0;
       background-repeat: no-repeat;
-      background-attachment: fixed;
-      background-position: top center;
       background-size: 500px 500px;
     }
 
     .before {
       /* background: red; */
-      background-image: url('assets/before.jpeg');
-
+       background-image: url('assets/before.jpeg');
+       background-position: top left;
     }
     .after {
       /* background: blue; */
       left: 50%;
       background-image: url('assets/after.jpeg');
+      background-position: top right;
     }
     .border {
       height: 100%;
@@ -95,10 +94,11 @@
             x: e.touches[0].clientX
           })
         }
-
       }
-
     </script>
+    <div class="header">
+      Hola, este soy yo, Nave. En Argentina, estamos todos guardados en nuestras casas debido a la reciente cuarentena por el Coronavirus. Como esto viene para rato. Hice esta mini app para que los confinados al encierro puedan comparar su antes y despues de pasar por la barberia/peluqueria.
+    </div>
     <div class="wrapper">
       <div class="header">&lt;-- Drag te bar --&gt;</div>
       <div id="before" class="image-container before">

@@ -46,10 +46,43 @@
       border-radius: 10px;
       color: white;
     }
+
+    .modal {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      text-align: center;
+      transform: translate3d(-50%, 0, 0);
+      background: white;
+      border-radius: 4px;
+      padding: 1rem;
+      box-shadow: 0px 10px 25px 0px rgba(0,0,0,0.75);
+    }
+    #url {
+      color: orange;
+      font-weight: bold;
+      font-size: 1.5rem;
+      padding: 16px 0;
+      background: lightgoldenrodyellow;
+      border-radius: 4px;
+      margin: 8px;
+    }
+    .openButton {
+      padding: 8px;
+      width: 240px;
+      margin: 8px 0;
+      font-size: 1rem;
+      background: orange;
+      color: white;
+      cursor: pointer;
+    }
   </style>
   <body>
     <div class="header">
       Hola sobreviviente, aqui puedes crear el antes y despues de la aventura del corona virus
+      <br />
+      Para generar tu propio before/after, carga en el control izquierdo, como eras antes, y en el derecho como eras después de tu corte de pelo.
     </div>
     <div class="wrapper">
       <div class="break"></div>
@@ -60,6 +93,13 @@
           <input type="file" id="afterImage" />
       </div>
       <button id="generate" onclick="generate()">Generar</button>
+      <div id="modal" class="modal">
+        Generaste tu before/after con exito, lo puedes compartir usando la siguiente URL:
+        <div id="url"></div>
+        <button class="openButton" onclick="window.open(document.getElementById('url').innerText)">Abrir</button>
+        <br />
+        <button onclick="(() => {document.getElementById('modal').style.display = 'none'})()">Cerrar</button>
+      </div>
       <script type="text/javascript">
         const sessionId = Math.round(Math.random() * 100000);
 
@@ -68,7 +108,11 @@
           formData.append("photo", photo);
           return fetch(`/api/${sessionId}/${part}/upload`, {
             method: "POST", body: formData
-          });
+          }).then(res => {
+            if (res.status !== 200) {
+              return Promise.reject();
+            }
+          })
         }
         function generate() {
           let photo = document.getElementById("afterImage").files[0];
@@ -77,11 +121,16 @@
           let photoBefore = document.getElementById("beforeImage").files[0];
           const promiseBefore = upload(sessionId, photoBefore, 'before');
 
-          Promise.all([promiseBefore, promiseAfter]).then(showRedirectUrl);
+          Promise.all([promiseBefore, promiseAfter])
+            .then(showRedirectUrl)
+            .catch(() => {
+              alert('Ocurrio un error, tal vez no subiste las fotos');
+            });
         }
 
         function showRedirectUrl() {
-          alert(`http://${window.location.host}/app/view.html?id=${sessionId}`);
+          document.getElementById('url').innerText = `http://${window.location.host}/app/view.html?id=${sessionId}`;
+          document.getElementById('modal').style.display = 'block';
         }
       </script>
     </div>

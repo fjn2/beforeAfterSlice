@@ -77,6 +77,13 @@
       color: white;
       cursor: pointer;
     }
+    .meetme {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: lightgoldenrodyellow;
+      border-radius: 5px;
+    }
   </style>
   <body>
     <div class="header">
@@ -100,6 +107,7 @@
         <br />
         <button onclick="(() => {document.getElementById('modal').style.display = 'none'})()">Cerrar</button>
       </div>
+      <button class="meetme" onclick="(() => { window.location.href = '/app'; })()">Conoceme</button>
       <script type="text/javascript">
         const sessionId = Math.round(Math.random() * 100000);
 
